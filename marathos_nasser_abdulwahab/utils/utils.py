@@ -47,7 +47,7 @@ def rename_columns_to_snake_case(df):
 
 def parse_event_distance_value(distance_col: Column) -> Column:
     """Extract the numeric value from a string like '50km' -> 50.0."""
-    return regexp_extract(distance_col, r"^([0-9.]+)", 1).cast("double")
+    return regexp_extract(distance_col, r"^([0-9.]+)", 1).try_cast("double")
 
 
 def parse_event_distance_unit(distance_col: Column) -> Column:
@@ -70,17 +70,20 @@ def classify_event_type(unit_col: Column) -> Column:
 def parse_performance_to_seconds(performance_col: Column) -> Column:
     """Convert a time like '8:30:49 h' into total seconds (for distance races)."""
     parts = split(performance_col, ":")
+    # check for later EDA errors
+    # try_cast (not cast), returns null instead of failing on malformed values
+    # such as multi-day races ('13d 14'), which are dropped downstream anyway
     return (
-        parts.getItem(0).cast("int") * 3600
-        + parts.getItem(1).cast("int") * 60
+        parts.getItem(0).try_cast("int") * 3600
+        + parts.getItem(1).try_cast("int") * 60
         # last segment still carries the ' h' suffix, strip it
-        + split(parts.getItem(2), " ").getItem(0).cast("int")
+        + split(parts.getItem(2), " ").getItem(0).try_cast("int")
     )
 
 
 def parse_performance_to_km(performance_col: Column) -> Column:
     """Extract the km value from a distance like '250.5 km' (for length races)."""
-    return regexp_extract(performance_col, r"([0-9.]+)", 1).cast("double")
+    return regexp_extract(performance_col, r"([0-9.]+)", 1).try_cast("double")
 
 
 def is_valid_row(event_type_col: Column, performance_col: Column) -> Column:
