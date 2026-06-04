@@ -93,6 +93,7 @@ def marathon_obt():
         df.withColumn("recomputed_speed_kmh", spark_round(col("recomputed_speed_kmh"), 2))
         .withColumn("performance_km", spark_round(col("performance_km"), 3))
         .withColumn("event_distance_value", spark_round(col("event_distance_value"), 3))
+        .withColumn("athlete_gender", coalesce(col("athlete_gender"), lit("unknown")))
     )
 
     return df.select(

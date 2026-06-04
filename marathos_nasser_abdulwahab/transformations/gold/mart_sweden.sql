@@ -2,9 +2,10 @@
 
 -- Join fact to dimensions, filter to Sweden
 -- Swedish Marathos events + LLM-generated data
+-- Events based in Sweden
 
 CREATE OR REFRESH MATERIALIZED VIEW marathos.gold.mart_sweden
-  COMMENT "Mart for Swedish ultra-marathon results - gold layer" AS
+  COMMENT "Mart for Swedish ultra-marathon events - gold layer" AS
 SELECT
   e.event_name,
   e.event_type,
@@ -27,4 +28,5 @@ FROM
   LEFT JOIN marathos.gold.dim_date    d ON f.date_id    = d.date_id
   LEFT JOIN marathos.gold.dim_country c ON a.athlete_country = c.country_code
 WHERE
-  a.athlete_country = 'SWE';
+  -- Changed specifically so it focuses on Sweden
+  e.event_name LIKE '%(SWE)%';
