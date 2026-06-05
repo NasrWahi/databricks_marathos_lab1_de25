@@ -8,7 +8,7 @@ Follows the principles and should keep the silver layer short and readable.
 import re
 
 from pyspark.sql import Column
-from pyspark.sql.functions import col, lower, regexp_extract, split, when
+from pyspark.sql.functions import lower, regexp_extract, split, when
 
 
 # 'Labbsnack' update + testing.
@@ -25,7 +25,7 @@ MILES_TO_KM = 1.60934
 MAX_PLAUSIBLE_SPEED_KMH = 21.0
 
 
-# Short, concise comments, docstrings and necessary inlines are present,
+# Short, concise comments, docstrings and necessary inlines are present
 # also type annotations are included for functions that call for it.
 
 
